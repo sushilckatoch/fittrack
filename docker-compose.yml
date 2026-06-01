@@ -1,0 +1,60 @@
+
+services:
+  frontend:
+    build: ./frontend
+    depends_on:
+      - auth-api
+
+  auth-api:
+    build: ./services/auth-api
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/fittrack
+      - JWT_SECRET=fittrack_super_secret_key
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+
+  admin-api:
+    build: ./services/admin-api
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=fittrack
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+    depends_on:
+      - postgres
+
+  ml-api:
+    build: ./services/ml-api
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - frontend
+      - auth-api
+      - admin-api
+      - ml-api
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: fittrack
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
