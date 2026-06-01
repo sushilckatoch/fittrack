@@ -48,3 +48,26 @@ A full-stack personal health & fitness tracking platform built with a microservi
 ### Run Locally
 
 ```bash
+# Clone the repo
+git clone https://github.com/sushilckatoch/fittrack.git
+cd fittrack
+
+# Start all services
+docker compose up --build
+```
+
+### Access the app
+- Frontend: http://localhost:8080
+- API Docs: http://localhost:8080/api/ml/docs
+
+## Project Structure
+
+fittrack/
+├── frontend/          # Vue.js app
+├── services/
+│   ├── auth-api/      # NestJS
+│   ├── admin-api/     # Laravel
+│   └── ml-api/        # FastAPI
+├── nginx/             # API Gateway
+├── k8s/               # Kubernetes configs
+└── docker-compose.yml
